@@ -1,0 +1,10 @@
+html, body, #root {
+height: 100%;
+margin: 0;
+font-family: Inter, Roboto, 'Poppins', sans-serif;
+}
+
+
+body {
+background: #fafafa;
+}
