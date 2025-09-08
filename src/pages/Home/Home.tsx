@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, Typography, CircularProgress, Box } from "@mui/material";
+import { Container, Typography, CircularProgress, Box, Paper } from "@mui/material";
 import DataTable from "../../components/DataTable/DataTable";
 import { PersonRow } from "../../types";
 import { columns } from "./columns";
@@ -37,8 +37,29 @@ const Home = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
-        <CircularProgress />
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "80vh",
+          backgroundColor: "#f5f5f5",
+          padding: 4,
+        }}
+      >
+        <Paper
+          elevation={3}
+          sx={{
+            padding: 4,
+            textAlign: "center",
+            borderRadius: 2,
+          }}
+        >
+          <CircularProgress size={60} thickness={5} color="primary" />
+          <Typography variant="h6" sx={{ mt: 2, fontFamily: "Poppins, sans-serif" }}>
+            Loading data, please wait...
+          </Typography>
+        </Paper>
       </Box>
     );
   }

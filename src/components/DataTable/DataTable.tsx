@@ -52,7 +52,7 @@ const DataTable: React.FC<DataTableProps> = ({ rows, columns }) => {
         autoHeight
         initialState={{
           pagination: { paginationModel: { pageSize: 10, page: 0 } },
-          sorting: { sortModel: [{ field: "name", sort: "asc" }] },
+          sorting: { sortModel: [{ field: "id", sort: "asc" }] },
         }}
         pageSizeOptions={[5, 10, 20]}
         checkboxSelection
