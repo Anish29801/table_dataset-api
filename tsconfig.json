@@ -1,15 +1,18 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "lib": [
-      "DOM",
-      "ESNext"
-    ],
-    "jsx": "react-jsx",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
-  }
+    "target": "ESNext",                   // Compiles TS to latest ECMAScript
+    "module": "ESNext",                   // Uses ES modules (import/export)
+    "lib": ["DOM", "ESNext"],             // Includes DOM and latest JS features
+    "jsx": "react-jsx",                   // Supports React 17+ JSX transform
+    "moduleResolution": "node",           // Resolves modules like Node.js
+    "resolveJsonModule": true,            // Allows importing .json files
+    "esModuleInterop": true,              // Enables default import compatibility
+    "skipLibCheck": true,                 // Skips type-checking of declaration files
+    "strict": true,                       // Enables all strict type-checking options
+    "forceConsistentCasingInFileNames": true, // Prevents casing issues
+    "types": ["vite/client"],             // Adds Vite types for TypeScript
+    "noEmit": true                        // Do not emit JS, Vite handles it
+  },
+  "include": ["src"],                     // Include your source files
+  "exclude": ["node_modules", "dist"]     // Exclude build and dependencies
 }
