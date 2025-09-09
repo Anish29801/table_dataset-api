@@ -1,18 +1,23 @@
 import { useEffect, useState } from "react";
 import { Container, Typography, CircularProgress, Box, Paper } from "@mui/material";
 import DataTable from "../../components/DataTable/DataTable";
-import { PersonRow } from "../../types";
+import { PersonRow,RandomUser } from "../../types";
 import { columns } from "./columns";
 import apiClient from "../../services/apiClient";
+import { GridPaginationModel } from "@mui/x-data-grid";
 
 const Home = () => {
   const [rows, setRows] = useState<PersonRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    pageSize: 10,
+    page: 0,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await apiClient.get<{ results: any[] }>("?results=20");
+        const response = await apiClient.get<{ results: RandomUser[] }>("?results=100");
 
         const fetchedRows: PersonRow[] = response.data.results.map((person, index) => ({
           id: index + 1,
@@ -75,7 +80,14 @@ const Home = () => {
       >
         DealAmaze Project 2 - Data Table Using Axios
       </Typography>
-      <DataTable rows={rows} columns={columns} />
+      
+      <DataTable
+        rows={rows}
+        columns={columns}
+        pageSize={paginationModel.pageSize}
+        page={paginationModel.page}
+        onPageChange={(model) => setPaginationModel(model)}
+      />
     </Container>
   );
 };

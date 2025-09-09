@@ -1,14 +1,17 @@
 import React, { useState, useMemo } from "react";
-import { DataGrid, GridColDef, GridRowParams } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRowParams, GridPaginationModel } from "@mui/x-data-grid";
 import { Box, TextField, Dialog, DialogTitle, DialogContent, Typography } from "@mui/material";
 import { PersonRow } from "../../types";
 
 interface DataTableProps {
   rows: PersonRow[];
   columns: GridColDef[];
+  pageSize: number;
+  page: number;
+  onPageChange: (model: GridPaginationModel) => void;
 }
 
-const DataTable: React.FC<DataTableProps> = ({ rows, columns }) => {
+const DataTable: React.FC<DataTableProps> = ({ rows, columns, pageSize, page, onPageChange }) => {
   const [searchText, setSearchText] = useState("");
   const [selectedPerson, setSelectedPerson] = useState<PersonRow | null>(null);
 
@@ -50,16 +53,15 @@ const DataTable: React.FC<DataTableProps> = ({ rows, columns }) => {
         rows={filteredRows}
         columns={columns}
         autoHeight
-        initialState={{
-          pagination: { paginationModel: { pageSize: 10, page: 0 } },
-          sorting: { sortModel: [{ field: "id", sort: "asc" }] },
-        }}
+        pagination
+        paginationModel={{ pageSize, page }}
         pageSizeOptions={[5, 10, 20]}
         checkboxSelection
         disableRowSelectionOnClick
         filterMode="client"
         sortingMode="client"
         onRowClick={handleRowClick}
+        onPaginationModelChange={onPageChange}
       />
 
       <Dialog open={!!selectedPerson} onClose={handleClose} fullWidth maxWidth="xs">
@@ -67,12 +69,24 @@ const DataTable: React.FC<DataTableProps> = ({ rows, columns }) => {
         <DialogContent sx={{ textAlign: "center", p: 3 }}>
           {selectedPerson && (
             <>
-              <Typography variant="h6" sx={{ fontSize: { xs: 14, sm: 18 } }}>{selectedPerson.name}</Typography>
-              <Typography variant="body2" sx={{ fontSize: { xs: 12, sm: 14 } }}>Email: {selectedPerson.email}</Typography>
-              <Typography variant="body2" sx={{ fontSize: { xs: 12, sm: 14 } }}>Phone: {selectedPerson.phone}</Typography>
-              <Typography variant="body2" sx={{ fontSize: { xs: 12, sm: 14 } }}>City: {selectedPerson.office}</Typography>
-              <Typography variant="body2" sx={{ fontSize: { xs: 12, sm: 14 } }}>Age: {selectedPerson.age}</Typography>
-              <Typography variant="body2" sx={{ fontSize: { xs: 12, sm: 14 } }}>Registered: {selectedPerson.startDate}</Typography>
+              <Typography variant="h6" sx={{ fontSize: { xs: 14, sm: 18 } }}>
+                {selectedPerson.name}
+              </Typography>
+              <Typography variant="body2" sx={{ fontSize: { xs: 12, sm: 14 } }}>
+                Email: {selectedPerson.email}
+              </Typography>
+              <Typography variant="body2" sx={{ fontSize: { xs: 12, sm: 14 } }}>
+                Phone: {selectedPerson.phone}
+              </Typography>
+              <Typography variant="body2" sx={{ fontSize: { xs: 12, sm: 14 } }}>
+                City: {selectedPerson.office}
+              </Typography>
+              <Typography variant="body2" sx={{ fontSize: { xs: 12, sm: 14 } }}>
+                Age: {selectedPerson.age}
+              </Typography>
+              <Typography variant="body2" sx={{ fontSize: { xs: 12, sm: 14 } }}>
+                Registered: {selectedPerson.startDate}
+              </Typography>
             </>
           )}
         </DialogContent>

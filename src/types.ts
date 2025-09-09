@@ -18,3 +18,12 @@ export interface Person {
   dob: { age: number };
   registered: { date: string };
 }
+
+export interface RandomUser {
+  name: { first: string; last: string };
+  email: string;
+  phone: string;
+  location: { city: string };
+  dob: { age: number };
+  registered: { date: string };
+}
