@@ -1,46 +1,45 @@
-import { useEffect, useState } from "react";
-import { Container, Typography, CircularProgress, Box, Paper } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Container,
+  Typography,
+  CircularProgress,
+  Box,
+  Paper,
+} from "@mui/material";
 import DataTable from "../../components/DataTable/DataTable";
-import { PersonRow,RandomUser } from "../../types";
+import { PersonRow, RandomUser } from "../../types";
 import { columns } from "./columns";
 import apiClient from "../../services/apiClient";
 import { GridPaginationModel } from "@mui/x-data-grid";
+import WeatherCard from "../../components/WeatherCard/WeatherCard";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchUsers = async (): Promise<PersonRow[]> => {
+  const response = await apiClient.get<{ results: RandomUser[] }>("?results=100");
+
+  return response.data.results.map((person, index) => ({
+    id: index + 1,
+    name: `${person.name.first} ${person.name.last}`,
+    email: person.email,
+    phone: person.phone,
+    office: person.location.city,
+    age: person.dob.age,
+    startDate: new Date(person.registered.date).toLocaleDateString(),
+  }));
+};
 
 const Home = () => {
-  const [rows, setRows] = useState<PersonRow[]>([]);
-  const [loading, setLoading] = useState(true);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     pageSize: 10,
     page: 0,
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await apiClient.get<{ results: RandomUser[] }>("?results=100");
+  const { data: rows, isLoading, isError } = useQuery({
+    queryKey: ["users"],
+    queryFn: fetchUsers,
+  });
 
-        const fetchedRows: PersonRow[] = response.data.results.map((person, index) => ({
-          id: index + 1,
-          name: `${person.name.first} ${person.name.last}`,
-          email: person.email,
-          phone: person.phone,
-          office: person.location.city,
-          age: person.dob.age,
-          startDate: new Date(person.registered.date).toLocaleDateString(),
-        }));
-
-        setRows(fetchedRows);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <Box
         sx={{
@@ -69,8 +68,18 @@ const Home = () => {
     );
   }
 
+  if (isError) {
+    return (
+      <Typography color="error" align="center" sx={{ mt: 4 }}>
+        Failed to load data 😿
+      </Typography>
+    );
+  }
+
   return (
-    <Container sx={{ mt: 4 }}>
+
+    <Container sx={{ mt: 6 }}>
+      <WeatherCard />
       <Typography
         variant="h4"
         component="h1"
@@ -80,14 +89,22 @@ const Home = () => {
       >
         DealAmaze Project 2 - Data Table Using Axios
       </Typography>
-      
-      <DataTable
-        rows={rows}
-        columns={columns}
-        pageSize={paginationModel.pageSize}
-        page={paginationModel.page}
-        onPageChange={(model) => setPaginationModel(model)}
-      />
+
+      {rows && (
+        <Box sx={{ mb: 6 }}>
+          <DataTable
+            rows={rows}
+            columns={columns}
+            pageSize={paginationModel.pageSize}
+            page={paginationModel.page}
+            onPageChange={(model) => setPaginationModel(model)}
+          />
+        </Box>
+      )}
+
+     
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+      </Box>
     </Container>
   );
 };
